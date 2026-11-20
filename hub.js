@@ -149,12 +149,20 @@ const SEARCH_API_URL =
    CREATE SEARCH RESULTS PANEL
 ========================================= */
 
+// IMPORTANT:
+// Results are placed AFTER the iframe wrapper,
+// not inside the wrapper that clips its contents.
+
+const playerFrameWrap = hubPlayer
+  ? hubPlayer.closest(".player-frame-wrap")
+  : null;
+
 const searchResultsPanel = document.createElement("div");
 searchResultsPanel.id = "web-search-results";
 searchResultsPanel.hidden = true;
 
-if (hubPlayer && playerSection) {
-  hubPlayer.insertAdjacentElement(
+if (playerFrameWrap) {
+  playerFrameWrap.insertAdjacentElement(
     "afterend",
     searchResultsPanel
   );
@@ -482,6 +490,10 @@ function openSettings() {
     hubPlayer.hidden = false;
   }
 
+  if (playerFrameWrap) {
+    playerFrameWrap.hidden = false;
+  }
+
   searchResultsPanel.hidden = true;
 
   hubHero.hidden = true;
@@ -582,6 +594,11 @@ function openPlayer(item) {
   openExternal.hidden = false;
 
   searchResultsPanel.hidden = true;
+
+  if (playerFrameWrap) {
+    playerFrameWrap.hidden = false;
+  }
+
   hubPlayer.hidden = false;
 
   settingsSection.hidden = true;
@@ -608,6 +625,12 @@ function showSearchResults(query, results) {
   playerDescription.textContent = `Search results for: ${query}`;
 
   openExternal.hidden = true;
+
+  // Hide the entire iframe wrapper, not just the iframe.
+  if (playerFrameWrap) {
+    playerFrameWrap.hidden = true;
+  }
+
   hubPlayer.hidden = true;
   searchResultsPanel.hidden = false;
 
@@ -700,6 +723,11 @@ function closePlayer() {
 
   hubPlayer.src = "about:blank";
   hubPlayer.hidden = false;
+
+  if (playerFrameWrap) {
+    playerFrameWrap.hidden = false;
+  }
+
   searchResultsPanel.hidden = true;
 
   playerSection.hidden = true;
@@ -803,6 +831,12 @@ if (webSearchForm && webSearchInput) {
     settingsSection.hidden = true;
 
     playerSection.hidden = false;
+
+    // Hide the entire iframe wrapper during search.
+    if (playerFrameWrap) {
+      playerFrameWrap.hidden = true;
+    }
+
     hubPlayer.hidden = true;
     searchResultsPanel.hidden = false;
 
@@ -876,8 +910,10 @@ if (webSearchForm && webSearchInput) {
       }
 
       searchResultsPanel.appendChild(message);
+
       playerTitle.textContent = "🌐 Search Error";
-      playerDescription.textContent = `Could not complete your search for: ${input}`;
+      playerDescription.textContent =
+        `Could not complete your search for: ${input}`;
     }
   });
 }
