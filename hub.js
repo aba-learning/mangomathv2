@@ -1,3 +1,4 @@
+
 /* =========================================
    MANGOHUB - MAIN SCRIPT
 ========================================= */
@@ -178,6 +179,16 @@ const settingsButton = document.getElementById("settings-button");
 const settingsSection = document.getElementById("settings-section");
 const settingsBackButton = document.getElementById("settings-back-button");
 
+/* FIX: DEFINE THEME BUTTON COLLECTIONS */
+
+const themeButtons = settingsSection
+  ? settingsSection.querySelectorAll("button[data-theme]")
+  : document.querySelectorAll("button[data-theme]");
+
+const backgroundThemeButtons = settingsSection
+  ? settingsSection.querySelectorAll("button[data-background-theme]")
+  : document.querySelectorAll("button[data-background-theme]");
+
 /* =========================================
    PLAYER MOUSE FOCUS FIX
 ========================================= */
@@ -287,6 +298,17 @@ favoritesButton.dataset.category = "favorites";
 favoritesButton.textContent = "⭐ Favorites";
 
 categoryNav.appendChild(favoritesButton);
+
+// FIX: Make sure the All button has the correct category.
+const allButton = [...categoryButtons].find(button =>
+  button.dataset.category === "all" ||
+  button.textContent.trim().toLowerCase() === "all"
+);
+
+if (allButton) {
+  allButton.dataset.category = "all";
+  allButton.classList.add("active");
+}
 
 const allCategoryButtons = [
   ...categoryButtons,
@@ -468,7 +490,6 @@ function renderRecentlyPlayed() {
   });
 
   recentSection.hidden =
-    activeCategory === "favorites" ||
     activeCategory !== "all" ||
     searchQuery.length > 0 ||
     recentItems.length === 0;
@@ -1189,7 +1210,11 @@ if (webSearchForm && webSearchInput) {
 
 allCategoryButtons.forEach(button => {
   button.addEventListener("click", () => {
-    activeCategory = button.dataset.category;
+    const category = button.dataset.category;
+
+    if (!category) return;
+
+    activeCategory = category;
 
     allCategoryButtons.forEach(item => {
       item.classList.toggle("active", item === button);
