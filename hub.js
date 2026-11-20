@@ -119,6 +119,26 @@ const openExternal = document.getElementById("open-external");
 const backButton = document.getElementById("back-to-library");
 const fullscreenButton = document.getElementById("fullscreen-button");
 
+/* =========================================
+   PLAYER MOUSE FOCUS FIX
+========================================= */
+
+if (hubPlayer) {
+  hubPlayer.setAttribute("tabindex", "0");
+
+  function focusPlayerFrame() {
+    try {
+      hubPlayer.focus({ preventScroll: true });
+      hubPlayer.contentWindow.focus();
+    } catch (error) {
+      console.warn("Could not focus player:", error);
+    }
+  }
+
+  hubPlayer.addEventListener("pointerenter", focusPlayerFrame);
+  hubPlayer.addEventListener("pointerdown", focusPlayerFrame);
+}
+
 /* WEB SEARCH ELEMENTS */
 
 const webSearchForm = document.getElementById("web-search-form");
@@ -148,10 +168,6 @@ const SEARCH_API_URL =
 /* =========================================
    CREATE SEARCH RESULTS PANEL
 ========================================= */
-
-// IMPORTANT:
-// Results are placed AFTER the iframe wrapper,
-// not inside the wrapper that clips its contents.
 
 const playerFrameWrap = hubPlayer
   ? hubPlayer.closest(".player-frame-wrap")
@@ -266,56 +282,20 @@ let searchQuery = "";
 ========================================= */
 
 const hubThemes = {
-  "normal": {
-    name: "Normal",
-    color: "#ECEA98"
-  },
-
-  "light": {
-    name: "Light",
-    color: "#FFFFFF"
-  },
-
-  "deep-ocean": {
-    name: "Deep Ocean",
-    color: "#004080"
-  },
-
-  "lime": {
-    name: "Lime",
-    color: "#DAFACC"
-  },
-
-  "light-blue": {
-    name: "Light Blue",
-    color: "#4EAAFF"
-  },
-
-  "blood": {
-    name: "Blood",
-    color: "#E10000"
-  },
-
-  "ender": {
-    name: "Ender",
-    color: "#8E75CF"
-  },
-
-  "mango": {
-    name: "Mango",
-    color: "#FFBF34"
-  }
+  "normal": { name: "Normal", color: "#ECEA98" },
+  "light": { name: "Light", color: "#FFFFFF" },
+  "deep-ocean": { name: "Deep Ocean", color: "#004080" },
+  "lime": { name: "Lime", color: "#DAFACC" },
+  "light-blue": { name: "Light Blue", color: "#4EAAFF" },
+  "blood": { name: "Blood", color: "#E10000" },
+  "ender": { name: "Ender", color: "#8E75CF" },
+  "mango": { name: "Mango", color: "#FFBF34" }
 };
 
-/* APPLY ACCENT THEME */
-
 function applyTheme(themeName, save = true) {
-  if (!hubThemes[themeName]) {
-    themeName = "normal";
-  }
+  if (!hubThemes[themeName]) themeName = "normal";
 
   const selectedTheme = hubThemes[themeName];
-
   document.body.dataset.theme = themeName;
 
   document.documentElement.style.setProperty(
@@ -325,7 +305,6 @@ function applyTheme(themeName, save = true) {
 
   themeButtons.forEach(button => {
     const isSelected = button.dataset.theme === themeName;
-
     button.classList.toggle("active", isSelected);
     button.setAttribute("aria-pressed", String(isSelected));
   });
@@ -339,8 +318,6 @@ function applyTheme(themeName, save = true) {
   }
 }
 
-/* LOAD ACCENT THEME */
-
 function loadSavedTheme() {
   let savedTheme = "normal";
 
@@ -350,14 +327,9 @@ function loadSavedTheme() {
     console.error("Could not load accent theme:", error);
   }
 
-  if (!hubThemes[savedTheme]) {
-    savedTheme = "normal";
-  }
-
+  if (!hubThemes[savedTheme]) savedTheme = "normal";
   applyTheme(savedTheme, false);
 }
-
-/* ACCENT THEME BUTTONS */
 
 themeButtons.forEach(button => {
   button.addEventListener("click", () => {
@@ -370,53 +342,18 @@ themeButtons.forEach(button => {
 ========================================= */
 
 const backgroundThemes = {
-  "normal": {
-    name: "Normal",
-    color: "#000000"
-  },
-
-  "light": {
-    name: "Light",
-    color: "#bbbbbb"
-  },
-
-  "dark-green": {
-    name: "Dark Green",
-    color: "#3b6e25"
-  },
-
-  "deeper-ocean": {
-    name: "Deeper Ocean",
-    color: "#00254b"
-  },
-
-  "mid-blue": {
-    name: "Mid Blue",
-    color: "#478dcd"
-  },
-
-  "dried-blood": {
-    name: "Dried Blood",
-    color: "#990202"
-  },
-
-  "end": {
-    name: "End",
-    color: "#7863af"
-  },
-
-  "rotten-mango": {
-    name: "Rotten Mango",
-    color: "#bd8c22"
-  }
+  "normal": { name: "Normal", color: "#000000" },
+  "light": { name: "Light", color: "#bbbbbb" },
+  "dark-green": { name: "Dark Green", color: "#3b6e25" },
+  "deeper-ocean": { name: "Deeper Ocean", color: "#00254b" },
+  "mid-blue": { name: "Mid Blue", color: "#478dcd" },
+  "dried-blood": { name: "Dried Blood", color: "#990202" },
+  "end": { name: "End", color: "#7863af" },
+  "rotten-mango": { name: "Rotten Mango", color: "#bd8c22" }
 };
 
-/* APPLY BACKGROUND THEME */
-
 function applyBackgroundTheme(themeName, save = true) {
-  if (!backgroundThemes[themeName]) {
-    themeName = "normal";
-  }
+  if (!backgroundThemes[themeName]) themeName = "normal";
 
   const selectedTheme = backgroundThemes[themeName];
 
@@ -437,17 +374,12 @@ function applyBackgroundTheme(themeName, save = true) {
 
   if (save) {
     try {
-      localStorage.setItem(
-        "mangohub_background_theme",
-        themeName
-      );
+      localStorage.setItem("mangohub_background_theme", themeName);
     } catch (error) {
       console.error("Could not save background theme:", error);
     }
   }
 }
-
-/* LOAD BACKGROUND THEME */
 
 function loadSavedBackgroundTheme() {
   let savedTheme = "normal";
@@ -459,14 +391,9 @@ function loadSavedBackgroundTheme() {
     console.error("Could not load background theme:", error);
   }
 
-  if (!backgroundThemes[savedTheme]) {
-    savedTheme = "normal";
-  }
-
+  if (!backgroundThemes[savedTheme]) savedTheme = "normal";
   applyBackgroundTheme(savedTheme, false);
 }
-
-/* BACKGROUND THEME BUTTONS */
 
 backgroundThemeButtons.forEach(button => {
   button.addEventListener("click", () => {
@@ -490,9 +417,7 @@ function openSettings() {
     hubPlayer.hidden = false;
   }
 
-  if (playerFrameWrap) {
-    playerFrameWrap.hidden = false;
-  }
+  if (playerFrameWrap) playerFrameWrap.hidden = false;
 
   searchResultsPanel.hidden = true;
 
@@ -595,9 +520,7 @@ function openPlayer(item) {
 
   searchResultsPanel.hidden = true;
 
-  if (playerFrameWrap) {
-    playerFrameWrap.hidden = false;
-  }
+  if (playerFrameWrap) playerFrameWrap.hidden = false;
 
   hubPlayer.hidden = false;
 
@@ -626,10 +549,7 @@ function showSearchResults(query, results) {
 
   openExternal.hidden = true;
 
-  // Hide the entire iframe wrapper, not just the iframe.
-  if (playerFrameWrap) {
-    playerFrameWrap.hidden = true;
-  }
+  if (playerFrameWrap) playerFrameWrap.hidden = true;
 
   hubPlayer.hidden = true;
   searchResultsPanel.hidden = false;
@@ -661,9 +581,7 @@ function showSearchResults(query, results) {
     try {
       resultURL = new URL(result.url);
 
-      if (!["http:", "https:"].includes(resultURL.protocol)) {
-        return;
-      }
+      if (!["http:", "https:"].includes(resultURL.protocol)) return;
     } catch {
       return;
     }
@@ -724,9 +642,7 @@ function closePlayer() {
   hubPlayer.src = "about:blank";
   hubPlayer.hidden = false;
 
-  if (playerFrameWrap) {
-    playerFrameWrap.hidden = false;
-  }
+  if (playerFrameWrap) playerFrameWrap.hidden = false;
 
   searchResultsPanel.hidden = true;
 
@@ -787,8 +703,6 @@ if (webSearchForm && webSearchInput) {
       return;
     }
 
-    /* CHECK IF INPUT IS A WEBSITE */
-
     const looksLikeWebsite =
       /^(https?:\/\/)?(www\.)?[\w-]+(\.[\w-]+)+(\/[^\s]*)?$/i.test(input);
 
@@ -819,8 +733,6 @@ if (webSearchForm && webSearchInput) {
       return;
     }
 
-    /* SEARCH THE WEB */
-
     playerTitle.textContent = "🌐 Searching...";
     playerDescription.textContent = `Looking for: ${input}`;
 
@@ -832,10 +744,7 @@ if (webSearchForm && webSearchInput) {
 
     playerSection.hidden = false;
 
-    // Hide the entire iframe wrapper during search.
-    if (playerFrameWrap) {
-      playerFrameWrap.hidden = true;
-    }
+    if (playerFrameWrap) playerFrameWrap.hidden = true;
 
     hubPlayer.hidden = true;
     searchResultsPanel.hidden = false;
@@ -854,8 +763,6 @@ if (webSearchForm && webSearchInput) {
     });
 
     try {
-      /* 15-SECOND REQUEST TIMEOUT */
-
       const controller = new AbortController();
 
       const timeoutId = setTimeout(() => {
