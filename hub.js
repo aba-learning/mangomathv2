@@ -1,4 +1,3 @@
-
 /* =========================================
    MANGOHUB - MAIN SCRIPT
 ========================================= */
@@ -53,6 +52,34 @@ const hubItems = [
     icon: "🌊",
     description: "Slide into the fun at AquaPark!",
     url: "https://assets.hbmc.net/aquapark-slides/index.html"
+  },
+  {
+    name: "Among Us Single Player",
+    category: "games",
+    icon: "👨‍🚀",
+    description: "Play Among Us in a single-player experience.",
+    url: "https://kdata1.com/2020/12/3054073"
+  },
+  {
+    name: "Flappy Bird",
+    category: "games",
+    icon: "🐦",
+    description: "Fly through the pipes in Flappy Bird!",
+    url: "https://assets.hbmc.net/flappybird/index.html"
+  },
+  {
+    name: "Happy Wheels",
+    category: "games",
+    icon: "🛞",
+    description: "Play Happy Wheels, the classic physics-based obstacle game.",
+    url: "https://games-online.io/game/HappyWheels"
+  },
+  {
+    name: "Bloons TD",
+    category: "games",
+    icon: "🎈",
+    description: "Pop waves of bloons using towers and upgrades.",
+    url: "https://assets.hbmc.net/bloonstd/index.html"
   },
 
   // MOVIES
