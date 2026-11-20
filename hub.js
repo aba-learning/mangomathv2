@@ -179,15 +179,99 @@ const settingsButton = document.getElementById("settings-button");
 const settingsSection = document.getElementById("settings-section");
 const settingsBackButton = document.getElementById("settings-back-button");
 
-/* FIX: DEFINE THEME BUTTON COLLECTIONS */
+/* THEME BUTTON COLLECTIONS */
 
-const themeButtons = settingsSection
-  ? settingsSection.querySelectorAll("button[data-theme]")
-  : document.querySelectorAll("button[data-theme]");
+const themeButtons = document.querySelectorAll("button[data-theme]");
+const backgroundThemeButtons = document.querySelectorAll("button[data-background-theme]");
 
-const backgroundThemeButtons = settingsSection
-  ? settingsSection.querySelectorAll("button[data-background-theme]")
-  : document.querySelectorAll("button[data-background-theme]");
+/* =========================================
+   FULLSCREEN EXIT BUTTON
+========================================= */
+
+const fullscreenExitButton = document.createElement("button");
+
+fullscreenExitButton.id = "fullscreen-exit-overlay";
+fullscreenExitButton.type = "button";
+fullscreenExitButton.textContent = "✕ EXIT FULLSCREEN";
+fullscreenExitButton.setAttribute("aria-label", "Exit fullscreen");
+
+const fullscreenExitStyle = document.createElement("style");
+
+fullscreenExitStyle.textContent = `
+  #player-section:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: auto;
+    background: var(--hub-bg, #000);
+  }
+
+  #player-section:fullscreen #fullscreen-exit-overlay {
+    display: block;
+  }
+
+  #fullscreen-exit-overlay {
+    display: none;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 2147483647;
+    padding: 12px 18px;
+    color: #000;
+    background: var(--hub-accent, #ECEA98);
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .4);
+  }
+
+  #fullscreen-exit-overlay:hover {
+    filter: brightness(1.1);
+  }
+
+  #player-section:fullscreen .player-frame-wrap {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+  }
+
+  #player-section:fullscreen #hub-player {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  @media (max-width: 600px) {
+    #fullscreen-exit-overlay {
+      top: 12px;
+      right: 12px;
+      padding: 12px 15px;
+      font-size: 13px;
+    }
+  }
+`;
+
+document.head.appendChild(fullscreenExitStyle);
+
+if (playerSection) {
+  playerSection.appendChild(fullscreenExitButton);
+}
+
+fullscreenExitButton.addEventListener("click", async () => {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    }
+  } catch (error) {
+    console.error("Could not exit fullscreen:", error);
+  }
+});
 
 /* =========================================
    PLAYER MOUSE FOCUS FIX
@@ -281,7 +365,6 @@ function addToRecentlyPlayed(item) {
    CATEGORY BUTTONS
 ========================================= */
 
-// Restore Utilities category.
 const utilitiesButton = document.createElement("button");
 utilitiesButton.type = "button";
 utilitiesButton.className = "category-button";
@@ -290,7 +373,6 @@ utilitiesButton.textContent = "🧰 Utilities";
 
 categoryNav.appendChild(utilitiesButton);
 
-// Favorites category.
 const favoritesButton = document.createElement("button");
 favoritesButton.type = "button";
 favoritesButton.className = "category-button";
@@ -299,7 +381,6 @@ favoritesButton.textContent = "⭐ Favorites";
 
 categoryNav.appendChild(favoritesButton);
 
-// FIX: Make sure the All button has the correct category.
 const allButton = [...categoryButtons].find(button =>
   button.dataset.category === "all" ||
   button.textContent.trim().toLowerCase() === "all"
@@ -1038,13 +1119,13 @@ backButton.addEventListener("click", closePlayer);
    FULLSCREEN PLAYER
 ========================================= */
 
-if (fullscreenButton && hubPlayer) {
+if (fullscreenButton && hubPlayer && playerSection) {
   fullscreenButton.addEventListener("click", async () => {
     try {
       if (document.fullscreenElement) {
         await document.exitFullscreen();
       } else {
-        await hubPlayer.requestFullscreen();
+        await playerSection.requestFullscreen();
       }
     } catch (error) {
       console.error("Fullscreen error:", error);
@@ -1052,7 +1133,10 @@ if (fullscreenButton && hubPlayer) {
   });
 
   document.addEventListener("fullscreenchange", () => {
-    fullscreenButton.textContent = document.fullscreenElement
+    const isFullscreen =
+      document.fullscreenElement === playerSection;
+
+    fullscreenButton.textContent = isFullscreen
       ? "✕ Exit Fullscreen"
       : "⛶ Fullscreen";
   });
