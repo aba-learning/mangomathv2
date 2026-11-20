@@ -47,6 +47,13 @@ const hubItems = [
     description: "Play Geometry Dash in your browser! (NOW WITH LEVEL EDITOR)",
     url: "https://gd-webport.pages.dev/"
   },
+  {
+    name: "AquaPark",
+    category: "games",
+    icon: "🌊",
+    description: "Slide into the fun at AquaPark!",
+    url: "https://assets.hbmc.net/aquapark-slides/index.html"
+  },
 
   // MOVIES
   {
