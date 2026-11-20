@@ -820,15 +820,30 @@ if (webSearchForm && webSearchInput) {
     });
 
     try {
-      const response = await fetch(SEARCH_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          query: input
-        })
-      });
+      /* 15-SECOND REQUEST TIMEOUT */
+
+      const controller = new AbortController();
+
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 15000);
+
+      let response;
+
+      try {
+        response = await fetch(SEARCH_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            query: input
+          }),
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       const data = await response.json();
 
@@ -851,10 +866,18 @@ if (webSearchForm && webSearchInput) {
 
       const message = document.createElement("div");
       message.className = "web-search-message";
-      message.textContent =
-        "Search failed: " + (error.message || "Unknown error");
+
+      if (error.name === "AbortError") {
+        message.textContent =
+          "Search timed out after 15 seconds. The Worker did not respond.";
+      } else {
+        message.textContent =
+          "Search failed: " + (error.message || "Unknown error");
+      }
 
       searchResultsPanel.appendChild(message);
+      playerTitle.textContent = "🌐 Search Error";
+      playerDescription.textContent = `Could not complete your search for: ${input}`;
     }
   });
 }
