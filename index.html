@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MangoMath</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="brand-area">
+      <a href="profile.html" class="open-profile">OPEN PROFILE</a>
+
+      <div class="mobile-quick-buttons">
+        <button id="mobile-dev-button" type="button">DEV</button>
+        <button id="mobile-hub-button" type="button">HUB</button>
+      </div>
+
+      <button id="profile-picture-button" title="Change profile picture">
+        <img id="profile-picture" src="" alt="Profile">
+        <span id="profile-placeholder">👤</span>
+        <span id="equipped-badge"></span>
+      </button>
+
+      <span id="profile-level">LEVEL 1</span>
+      <a class="logo" href="#">🥭 MangoMath</a>
+    </div>
+
+    <nav>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#quiz">Practice</a>
+    </nav>
+
+    <span class="tag">LEARN. SOLVE. GROW.</span>
+  </header>
+
+  <input type="file" id="profile-upload" accept="image/*" hidden>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">WELCOME TO MANGOMATH</p>
+        <h1>Make math<br><span>mango-nificent.</span></h1>
+        <p class="description">
+          Sharpen your skills, challenge yourself, and make every answer count.
+        </p>
+        <a class="start-button" href="#quiz">Start Practicing →</a>
+      </div>
+      <div class="mango">🥭</div>
+    </section>
+
+    <section class="dashboard-section" id="dashboard">
+      <p class="eyebrow">YOUR PROGRESS</p>
+      <h2>Your Dashboard</h2>
+      <p class="section-description">Every question gets you closer to greatness.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">🏆</span>
+          <p>BEST SCORE</p>
+          <h3 id="best-score">0/20</h3>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📚</span>
+          <p>QUIZZES COMPLETED</p>
+          <h3 id="total-quizzes">0</h3>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📈</span>
+          <p>AVERAGE SCORE</p>
+          <h3 id="average-score">0%</h3>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔥</span>
+          <p>DAILY STREAK</p>
+          <h3 id="daily-streak">0 days</h3>
+        </div>
+      </div>
+
+      <div class="xp-card">
+        <div class="xp-card-heading">
+          <div>
+            <p class="xp-eyebrow">YOUR EXPERIENCE</p>
+            <h3>⭐ XP & Leveling</h3>
+          </div>
+          <span id="xp-level-display">LEVEL 1</span>
+        </div>
+        <div class="xp-total-row">
+          <strong id="total-xp">0 XP</strong>
+          <span id="xp-to-next">100 XP to next level</span>
+        </div>
+        <div class="xp-progress-track">
+          <div id="xp-progress-bar"></div>
+        </div>
+        <div class="xp-progress-labels">
+          <span id="xp-current-progress">0 XP</span>
+          <span id="xp-next-progress">100 XP</span>
+        </div>
+        <p class="xp-card-description">
+          Keep answering questions and completing quizzes to level up!
+        </p>
+      </div>
+
+      <div class="prestige-card">
+        <div class="prestige-heading">
+          <div>
+            <p class="xp-eyebrow">THE NEXT CHALLENGE</p>
+            <h3>🏆 Prestige System</h3>
+          </div>
+          <span id="prestige-count">PRESTIGE 0</span>
+        </div>
+        <p>
+          Reach Level 20 to prestige. Your level and XP reset,
+          but you earn a permanent prestige badge!
+        </p>
+        <button id="prestige-button" type="button" disabled>
+          🔒 REACH LEVEL 20
+        </button>
+        <p class="prestige-limit" id="prestige-status">
+          Your prestige journey starts here.
+        </p>
+      </div>
+
+      <div class="activity-card">
+        <div class="activity-heading">
+          <h3>Recent Activity</h3>
+          <span>YOUR LATEST QUIZZES</span>
+        </div>
+        <div id="recent-activity">
+          <p class="empty-activity">No quizzes completed yet. Start practicing!</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="achievements-section" id="achievements">
+      <p class="eyebrow">YOUR COLLECTION</p>
+      <h2>Achievements & Badges</h2>
+      <p class="section-description">
+        Complete challenges, earn badges, and show off your progress.
+      </p>
+      <div class="achievement-summary">
+        <div>
+          <span class="achievement-summary-number" id="achievement-count">0/32</span>
+          <span class="achievement-summary-label">UNLOCKED</span>
+        </div>
+        <div class="achievement-progress-track">
+          <div id="achievement-progress"></div>
+        </div>
+      </div>
+      <div class="achievements-grid" id="achievements-grid">
+        <p class="empty-activity">Loading achievements...</p>
+      </div>
+    </section>
+
+    <section class="quiz-section" id="quiz">
+      <p class="eyebrow">YOUR DAILY CHALLENGE</p>
+      <h2>Ready to test your brain?</h2>
+
+      <div class="quiz-card" id="setup-screen">
+        <h3>Choose your difficulty</h3>
+        <p class="setup-description">Every quiz has 20 questions.</p>
+        <div class="difficulty-options">
+          <button class="difficulty selected" data-level="all">
+            <strong>ALL DIFFICULTIES</strong>
+            <span>Easy, Medium & Hard</span>
+          </button>
+          <button class="difficulty" data-level="easy">
+            <strong>EASY</strong>
+            <span>Warm up your brain</span>
+          </button>
+          <button class="difficulty" data-level="medium">
+            <strong>MEDIUM</strong>
+            <span>Put your skills to work</span>
+          </button>
+          <button class="difficulty" data-level="hard">
+            <strong>HARD</strong>
+            <span>Challenge yourself</span>
+          </button>
+        </div>
+        <button id="start-quiz">Start 20 Questions →</button>
+      </div>
+
+      <div class="quiz-card" id="game-screen" hidden>
+        <div class="quiz-top">
+          <span id="question-count">QUESTION 1 / 20</span>
+          <span>SCORE: <strong id="score">0</strong></span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar"></div>
+        </div>
+        <span id="difficulty-label" class="difficulty-label">EASY</span>
+        <h3 id="question">Loading question...</h3>
+        <div id="answers" class="answers"></div>
+        <p id="feedback">Choose your answer above.</p>
+        <button id="next-question" hidden>Next Question →</button>
+      </div>
+
+      <div class="quiz-card results-card" id="results-screen" hidden>
+        <div class="result-mango">🥭</div>
+        <p class="eyebrow">CHALLENGE COMPLETED</p>
+        <h3 id="result-title">Amazing work!</h3>
+        <p id="final-score">You scored 0 out of 20.</p>
+        <div class="result-bar">
+          <div id="result-progress"></div>
+        </div>
+        <div class="xp-earned-card">
+          <span>⭐</span>
+          <div>
+            <strong id="xp-earned">+0 XP</strong>
+            <p>XP earned this quiz</p>
+          </div>
+        </div>
+        <p id="result-message"></p>
+        <button id="play-again">Play Again →</button>
+      </div>
+    </section>
+
+    <section class="about">
+      <h2>Small steps. <span>Big brain.</span></h2>
+      <p>
+        MangoMath makes practicing math simple, fun, and rewarding.
+        Keep learning and keep growing!
+      </p>
+    </section>
+  </main>
+
+  <div id="level-up-toast" class="level-up-toast" hidden>
+    <span>🎉</span>
+    <div>
+      <strong>LEVEL UP!</strong>
+      <p id="level-up-message">You reached Level 2!</p>
+    </div>
+  </div>
+
+  <div id="dev-console" class="dev-console" hidden>
+    <div class="dev-console-header">
+      <div>
+        <span class="dev-console-label">MANGOMATH INTERNAL TOOLS</span>
+        <h2>⚙️ Developer Console</h2>
+      </div>
+      <button id="close-dev-console" type="button">✕</button>
+    </div>
+    <div class="dev-console-info">
+      <div><span>CURRENT LEVEL</span><strong id="dev-current-level">1</strong></div>
+      <div><span>TOTAL XP</span><strong id="dev-current-xp">0</strong></div>
+      <div><span>PRESTIGE</span><strong id="dev-current-prestige">0</strong></div>
+    </div>
+    <div class="dev-console-section">
+      <label for="dev-xp-amount">XP AMOUNT</label>
+      <input type="number" id="dev-xp-amount" min="1" max="1000000" placeholder="Enter XP amount">
+      <button id="dev-give-xp" type="button">GIVE XP</button>
+    </div>
+    <div class="dev-console-section">
+      <span>QUICK XP COMMANDS</span>
+      <div class="dev-quick-buttons">
+        <button type="button" data-dev-xp="100">+100 XP</button>
+        <button type="button" data-dev-xp="500">+500 XP</button>
+        <button type="button" data-dev-xp="1000">+1,000 XP</button>
+        <button type="button" data-dev-xp="5000">+5,000 XP</button>
+      </div>
+    </div>
+    <p id="dev-console-message">Developer tools ready.</p>
+    <span class="dev-console-footer">PRESS F6 TO CLOSE</span>
+  </div>
+
+  <footer>
+    <p>🥭 MangoMath — Keep growing.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MangoMath - Profile Settings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <a class="logo" href="index.html">🥭 MangoMath</a>
+    <a href="index.html" class="back-button">← Back to Home</a>
+  </header>
+
+  <main class="profile-page">
+    <p class="eyebrow">ACCOUNT SETTINGS</p>
+    <h1>My Profile</h1>
+    <p class="profile-description">Customize your MangoMath account.</p>
+
+    <div class="profile-settings-card">
+      <div class="profile-preview">
+        <img id="settings-picture" src="" alt="Your profile picture">
+        <span id="settings-placeholder">👤</span>
+      </div>
+
+      <label class="upload-button" for="settings-upload">
+        Change Profile Picture
+      </label>
+      <input type="file" id="settings-upload" accept="image/*" hidden>
+
+      <div class="settings-divider"></div>
+
+      <label for="username-input">ACCOUNT USERNAME</label>
+      <input
+        type="text"
+        id="username-input"
+        maxlength="20"
+        placeholder="Enter your username"
+      >
+
+      <p class="settings-hint">
+        Your username can contain up to 20 characters.
+      </p>
+
+      <button id="save-profile">Save Changes</button>
+
+      <p id="save-message"></p>
+    </div>
+  </main>
+
+  <footer>
+    <p>🥭 MangoMath — Keep growing.</p>
+  </footer>
+
+  <script src="profile.js"></script>
+</body>
+</html>
