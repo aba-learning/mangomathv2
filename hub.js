@@ -852,7 +852,7 @@ if (webSearchForm && webSearchInput) {
       const message = document.createElement("div");
       message.className = "web-search-message";
       message.textContent =
-        "Search failed. Check your Worker deployment and API settings, then try again.";
+        "Search failed: " + (error.message || "Unknown error");
 
       searchResultsPanel.appendChild(message);
     }
