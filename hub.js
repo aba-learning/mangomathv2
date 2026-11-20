@@ -50,25 +50,11 @@ const hubItems = [
 
   // MOVIES
   {
-    name: "Tubi",
-    category: "movies",
-    icon: "🍿",
-    description: "Explore free, ad-supported movies and shows.",
-    url: "https://tubitv.com/"
-  },
-  {
     name: "PBS",
     category: "movies",
     icon: "📺",
     description: "Watch programs, documentaries, and series.",
     url: "https://www.pbs.org/"
-  },
-  {
-    name: "JustWatch",
-    category: "movies",
-    icon: "🎬",
-    description: "Find where movies and shows are legally streaming.",
-    url: "https://www.justwatch.com/"
   },
   {
     name: "Atlantic",
