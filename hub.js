@@ -143,6 +143,273 @@ const SEARCH_API_URL =
   "https://mangohub-browser.newtwiggymariobros.workers.dev";
 
 /* =========================================
+   FAVORITES & RECENTLY PLAYED STORAGE
+========================================= */
+
+const FAVORITES_KEY = "mangohub_favorites";
+const RECENT_KEY = "mangohub_recently_played";
+
+function loadStoredArray(key) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    console.error("Could not load " + key + ":", error);
+    return [];
+  }
+}
+
+let favoriteItems = loadStoredArray(FAVORITES_KEY);
+let recentlyPlayed = loadStoredArray(RECENT_KEY);
+
+function saveFavorites() {
+  try {
+    localStorage.setItem(
+      FAVORITES_KEY,
+      JSON.stringify(favoriteItems)
+    );
+  } catch (error) {
+    console.error("Could not save favorites:", error);
+  }
+}
+
+function saveRecentlyPlayed() {
+  try {
+    localStorage.setItem(
+      RECENT_KEY,
+      JSON.stringify(recentlyPlayed)
+    );
+  } catch (error) {
+    console.error("Could not save recently played:", error);
+  }
+}
+
+function isFavorite(item) {
+  return favoriteItems.includes(item.url);
+}
+
+function toggleFavorite(item) {
+  if (isFavorite(item)) {
+    favoriteItems = favoriteItems.filter(url => url !== item.url);
+  } else {
+    favoriteItems.push(item.url);
+  }
+
+  saveFavorites();
+  renderHub();
+}
+
+function addToRecentlyPlayed(item) {
+  recentlyPlayed = [
+    item.url,
+    ...recentlyPlayed.filter(url => url !== item.url)
+  ].slice(0, 8);
+
+  saveRecentlyPlayed();
+  renderRecentlyPlayed();
+}
+
+/* =========================================
+   CREATE FAVORITES CATEGORY
+========================================= */
+
+let activeCategory = "all";
+let searchQuery = "";
+
+const favoritesButton = document.createElement("button");
+favoritesButton.type = "button";
+favoritesButton.className = "category-button";
+favoritesButton.dataset.category = "favorites";
+favoritesButton.textContent = "⭐ Favorites";
+
+categoryNav.appendChild(favoritesButton);
+
+const allCategoryButtons = [
+  ...categoryButtons,
+  favoritesButton
+];
+
+/* =========================================
+   CREATE RECENTLY PLAYED SECTION
+========================================= */
+
+const recentSection = document.createElement("section");
+recentSection.id = "recently-played-section";
+recentSection.innerHTML = `
+  <div class="recently-played-heading">
+    <h2>🕘 Recently Played</h2>
+    <button type="button" id="clear-recently-played">
+      Clear History
+    </button>
+  </div>
+  <div id="recently-played-grid" class="recently-played-grid"></div>
+`;
+
+const recentStyle = document.createElement("style");
+
+recentStyle.textContent = `
+  #recently-played-section {
+    width: 100%;
+    margin: 0 0 30px;
+  }
+
+  .recently-played-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .recently-played-heading h2 {
+    margin: 0;
+    color: var(--hub-accent);
+    font-size: 20px;
+  }
+
+  #clear-recently-played {
+    padding: 8px 12px;
+    color: var(--hub-muted);
+    background: var(--hub-card);
+    border: 1px solid var(--hub-border);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  #clear-recently-played:hover {
+    color: var(--hub-accent);
+    border-color: var(--hub-accent);
+  }
+
+  .recently-played-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+
+  .recent-card {
+    position: relative;
+    min-width: 0;
+    padding: 16px;
+    color: white;
+    text-align: left;
+    background: var(--hub-card);
+    border: 1px solid var(--hub-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+
+  .recent-card:hover {
+    border-color: var(--hub-accent);
+    transform: translateY(-2px);
+  }
+
+  .recent-card strong {
+    display: block;
+    margin: 8px 0 5px;
+  }
+
+  .recent-card small {
+    color: var(--hub-muted);
+  }
+
+  .hub-card {
+    position: relative;
+  }
+
+  .hub-favorite-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: var(--hub-muted);
+    background: var(--hub-card);
+    border: 1px solid var(--hub-border);
+    border-radius: 9px;
+    font-size: 19px;
+    cursor: pointer;
+  }
+
+  .hub-favorite-button:hover,
+  .hub-favorite-button.is-favorite {
+    color: var(--hub-accent);
+    border-color: var(--hub-accent);
+  }
+
+  .hub-card-top {
+    padding-right: 35px;
+  }
+
+  #recently-played-section[hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 500px) {
+    .recently-played-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+`;
+
+document.head.appendChild(recentStyle);
+
+const hubGridParent = hubGrid.parentElement;
+hubGridParent.insertBefore(recentSection, hubGrid);
+
+const recentlyPlayedGrid = document.getElementById(
+  "recently-played-grid"
+);
+
+document.getElementById("clear-recently-played")
+  .addEventListener("click", () => {
+    recentlyPlayed = [];
+    saveRecentlyPlayed();
+    renderRecentlyPlayed();
+  });
+
+function renderRecentlyPlayed() {
+  recentlyPlayedGrid.replaceChildren();
+
+  const recentItems = recentlyPlayed
+    .map(url => hubItems.find(item => item.url === url))
+    .filter(Boolean);
+
+  recentItems.forEach(item => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "recent-card";
+
+    const icon = document.createElement("span");
+    icon.textContent = item.icon;
+
+    const name = document.createElement("strong");
+    name.textContent = item.name;
+
+    const category = document.createElement("small");
+    category.textContent =
+      item.category.charAt(0).toUpperCase() +
+      item.category.slice(1);
+
+    card.append(icon, name, category);
+    card.addEventListener("click", () => openPlayer(item));
+
+    recentlyPlayedGrid.appendChild(card);
+  });
+
+  recentSection.hidden =
+    activeCategory === "favorites" ||
+    activeCategory !== "all" ||
+    searchQuery.length > 0 ||
+    recentItems.length === 0;
+}
+
+/* =========================================
    CREATE SEARCH RESULTS PANEL
 ========================================= */
 
@@ -246,13 +513,6 @@ searchResultsStyle.textContent = `
 `;
 
 document.head.appendChild(searchResultsStyle);
-
-/* =========================================
-   STATE
-========================================= */
-
-let activeCategory = "all";
-let searchQuery = "";
 
 /* =========================================
    ACCENT COLOR THEMES
@@ -437,7 +697,9 @@ function renderHub() {
   const filteredItems = hubItems.filter(item => {
     const matchesCategory =
       activeCategory === "all" ||
-      item.category === activeCategory;
+      (activeCategory === "favorites"
+        ? isFavorite(item)
+        : item.category === activeCategory);
 
     const searchText =
       `${item.name} ${item.description} ${item.category}`.toLowerCase();
@@ -448,10 +710,25 @@ function renderHub() {
   hubGrid.replaceChildren();
 
   filteredItems.forEach(item => {
-    const card = document.createElement("button");
-    card.type = "button";
+    const card = document.createElement("div");
     card.className = "hub-card";
-    card.addEventListener("click", () => openPlayer(item));
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", "Open " + item.name);
+
+    card.addEventListener("click", event => {
+      if (event.target.closest(".hub-favorite-button")) return;
+      openPlayer(item);
+    });
+
+    card.addEventListener("keydown", event => {
+      if (event.target !== card) return;
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPlayer(item);
+      }
+    });
 
     const top = document.createElement("div");
     top.className = "hub-card-top";
@@ -466,6 +743,24 @@ function renderHub() {
 
     top.append(icon, category);
 
+    const favoriteButton = document.createElement("button");
+    favoriteButton.type = "button";
+    favoriteButton.className = "hub-favorite-button";
+    favoriteButton.classList.toggle("is-favorite", isFavorite(item));
+    favoriteButton.textContent = isFavorite(item) ? "★" : "☆";
+    favoriteButton.title = isFavorite(item)
+      ? "Remove from Favorites"
+      : "Add to Favorites";
+    favoriteButton.setAttribute(
+      "aria-label",
+      favoriteButton.title
+    );
+
+    favoriteButton.addEventListener("click", event => {
+      event.stopPropagation();
+      toggleFavorite(item);
+    });
+
     const name = document.createElement("h3");
     name.textContent = item.name;
 
@@ -476,12 +771,21 @@ function renderHub() {
     launch.className = "hub-card-link";
     launch.textContent = "OPEN IN MANGOHUB →";
 
-    card.append(top, name, description, launch);
+    card.append(
+      top,
+      favoriteButton,
+      name,
+      description,
+      launch
+    );
+
     hubGrid.appendChild(card);
   });
 
   resultCount.textContent = `${filteredItems.length} RESULTS`;
   noResults.hidden = filteredItems.length !== 0;
+
+  renderRecentlyPlayed();
 }
 
 /* =========================================
@@ -489,6 +793,14 @@ function renderHub() {
 ========================================= */
 
 function openPlayer(item) {
+  const libraryItem = hubItems.find(
+    existingItem => existingItem.url === item.url
+  );
+
+  if (libraryItem) {
+    addToRecentlyPlayed(libraryItem);
+  }
+
   playerTitle.textContent = item.icon + " " + item.name;
   playerDescription.textContent = item.description;
 
@@ -628,6 +940,8 @@ function closePlayer() {
   categoryNav.hidden = false;
   librarySection.hidden = false;
   hubInfo.hidden = false;
+
+  renderRecentlyPlayed();
 }
 
 backButton.addEventListener("click", closePlayer);
@@ -806,11 +1120,11 @@ if (webSearchForm && webSearchInput) {
    CATEGORY FILTERS
 ========================================= */
 
-categoryButtons.forEach(button => {
+allCategoryButtons.forEach(button => {
   button.addEventListener("click", () => {
     activeCategory = button.dataset.category;
 
-    categoryButtons.forEach(item => {
+    allCategoryButtons.forEach(item => {
       item.classList.toggle("active", item === button);
     });
 
