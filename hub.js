@@ -12,13 +12,6 @@ const hubItems = [
     url: "https://www.coolmathgames.com/"
   },
   {
-    name: "DogeUB",
-    category: "games",
-    icon: "🌐",
-    description: "DogeUB.",
-    url: "https://unpkg.com/unblocking@1.0.14/index.html?from=https%3A%2F%2Fdogeub.storage.googleapis.com%2Fcourse&mid=u1#/docs"
-  },
-  {
     name: "Baldi's Basics",
     category: "games",
     icon: "📏",
@@ -81,6 +74,50 @@ const hubItems = [
     description: "Pop waves of bloons using towers and upgrades.",
     url: "https://assets.hbmc.net/bloonstd/index.html"
   },
+  {
+    name: "Bloons TD 2",
+    category: "games",
+    icon: "🎈",
+    description: "Play Bloons TD 2 and pop even more balloons!",
+    url: "https://assets.hbmc.net/bloonstd2/index.html"
+  },
+  {
+    name: "Bloons TD 3",
+    category: "games",
+    icon: "🎈",
+    description: "Play Bloons TD 3 and pop waves of bloons!",
+    url: "https://selenite.cc/resources/semag/btd3/index.html"
+  },
+  {
+    name: "Bloons TD 4",
+    category: "games",
+    icon: "🎈",
+    description: "Play Bloons TD 4 and pop even more waves of bloons!",
+    url: "https://selenite.cc/resources/semag/btd4/index.html"
+  },
+  {
+    name: "Bloons TD 5",
+    category: "games",
+    icon: "🎈",
+    description: "Play Bloons TD 5 and defend against even more bloons!",
+    url: "https://selenite.cc/resources/semag/btd5/index.html"
+  },
+
+  // UTILITIES
+  {
+    name: "DogeUB",
+    category: "utilities",
+    icon: "🌐",
+    description: "Browse unblocked resources with DogeUB.",
+    url: "https://unpkg.com/unblocking@1.0.14/index.html?from=https%3A%2F%2Fdogeub.storage.googleapis.com%2Fcourse&mid=u1#/docs"
+  },
+  {
+    name: "Selenite",
+    category: "utilities",
+    icon: "⭐",
+    description: "Explore games and resources on Selenite.",
+    url: "https://selenite.cc/"
+  },
 
   // MOVIES
   {
@@ -130,6 +167,17 @@ const openExternal = document.getElementById("open-external");
 const backButton = document.getElementById("back-to-library");
 const fullscreenButton = document.getElementById("fullscreen-button");
 
+/* WEB SEARCH ELEMENTS */
+
+const webSearchForm = document.getElementById("web-search-form");
+const webSearchInput = document.getElementById("web-search-input");
+
+/* SETTINGS ELEMENTS */
+
+const settingsButton = document.getElementById("settings-button");
+const settingsSection = document.getElementById("settings-section");
+const settingsBackButton = document.getElementById("settings-back-button");
+
 /* =========================================
    PLAYER MOUSE FOCUS FIX
 ========================================= */
@@ -149,25 +197,6 @@ if (hubPlayer) {
   hubPlayer.addEventListener("pointerenter", focusPlayerFrame);
   hubPlayer.addEventListener("pointerdown", focusPlayerFrame);
 }
-
-/* WEB SEARCH ELEMENTS */
-
-const webSearchForm = document.getElementById("web-search-form");
-const webSearchInput = document.getElementById("web-search-input");
-
-/* SETTINGS ELEMENTS */
-
-const settingsButton = document.getElementById("settings-button");
-const settingsSection = document.getElementById("settings-section");
-const settingsBackButton = document.getElementById("settings-back-button");
-
-const themeButtons = document.querySelectorAll(
-  ".theme-option[data-theme]"
-);
-
-const backgroundThemeButtons = document.querySelectorAll(
-  ".background-theme-option"
-);
 
 /* =========================================
    SEARCH CONFIGURATION
@@ -198,10 +227,7 @@ let recentlyPlayed = loadStoredArray(RECENT_KEY);
 
 function saveFavorites() {
   try {
-    localStorage.setItem(
-      FAVORITES_KEY,
-      JSON.stringify(favoriteItems)
-    );
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favoriteItems));
   } catch (error) {
     console.error("Could not save favorites:", error);
   }
@@ -209,10 +235,7 @@ function saveFavorites() {
 
 function saveRecentlyPlayed() {
   try {
-    localStorage.setItem(
-      RECENT_KEY,
-      JSON.stringify(recentlyPlayed)
-    );
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recentlyPlayed));
   } catch (error) {
     console.error("Could not save recently played:", error);
   }
@@ -244,12 +267,19 @@ function addToRecentlyPlayed(item) {
 }
 
 /* =========================================
-   CREATE FAVORITES CATEGORY
+   CATEGORY BUTTONS
 ========================================= */
 
-let activeCategory = "all";
-let searchQuery = "";
+// Restore Utilities category.
+const utilitiesButton = document.createElement("button");
+utilitiesButton.type = "button";
+utilitiesButton.className = "category-button";
+utilitiesButton.dataset.category = "utilities";
+utilitiesButton.textContent = "🧰 Utilities";
 
+categoryNav.appendChild(utilitiesButton);
+
+// Favorites category.
 const favoritesButton = document.createElement("button");
 favoritesButton.type = "button";
 favoritesButton.className = "category-button";
@@ -260,11 +290,12 @@ categoryNav.appendChild(favoritesButton);
 
 const allCategoryButtons = [
   ...categoryButtons,
+  utilitiesButton,
   favoritesButton
 ];
 
 /* =========================================
-   CREATE RECENTLY PLAYED SECTION
+   RECENTLY PLAYED SECTION
 ========================================= */
 
 const recentSection = document.createElement("section");
@@ -462,7 +493,9 @@ if (playerFrameWrap) {
   );
 }
 
-/* SEARCH RESULTS STYLING */
+/* =========================================
+   SEARCH RESULTS STYLING
+========================================= */
 
 const searchResultsStyle = document.createElement("style");
 
@@ -727,6 +760,9 @@ settingsBackButton.addEventListener("click", closeSettings);
    RENDER LIBRARY
 ========================================= */
 
+let activeCategory = "all";
+let searchQuery = "";
+
 function renderHub() {
   const filteredItems = hubItems.filter(item => {
     const matchesCategory =
@@ -785,10 +821,7 @@ function renderHub() {
     favoriteButton.title = isFavorite(item)
       ? "Remove from Favorites"
       : "Add to Favorites";
-    favoriteButton.setAttribute(
-      "aria-label",
-      favoriteButton.title
-    );
+    favoriteButton.setAttribute("aria-label", favoriteButton.title);
 
     favoriteButton.addEventListener("click", event => {
       event.stopPropagation();
