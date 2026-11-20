@@ -83,15 +83,6 @@ const hubItems = [
     icon: "🎨",
     description: "Visit the ToonPlay website.",
     url: "https://toonplay.in/"
-  },
-
-  // UTILITIES
-  {
-    name: "Bing",
-    category: "utilities",
-    icon: "🛠️",
-    description: "Microsoft Bing",
-    url: "https://aba.com/"
   }
 ];
 
