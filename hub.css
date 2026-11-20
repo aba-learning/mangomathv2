@@ -873,3 +873,38 @@ body[data-background-theme="rotten-mango"] {
 #hub-player[hidden] {
   display: none !important;
 }
+
+/* =========================================
+   MANGOHUB - GLOBAL SCROLL FIX
+========================================= */
+
+html {
+  min-height: 100%;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  height: auto !important;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+}
+
+.hub-main,
+.player-section,
+.settings-section {
+  max-height: none;
+}
+
+/* Keep the iframe clipped, but don't clip the page */
+.player-frame-wrap {
+  overflow: hidden;
+}
+
+/* Keep hidden elements hidden */
+[hidden] {
+  display: none !important;
+}
