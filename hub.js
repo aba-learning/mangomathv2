@@ -1,17 +1,9 @@
-
 /* =========================================
    MANGOHUB - MAIN SCRIPT
 ========================================= */
 
 const hubItems = [
   // GAMES
-  {
-    name: "Coolmath Games",
-    category: "games",
-    icon: "🎮",
-    description: "Play puzzles, strategy games, and fun browser games.",
-    url: "https://www.coolmathgames.com/"
-  },
   {
     name: "Baldi's Basics",
     category: "games",
@@ -105,6 +97,13 @@ const hubItems = [
   },
 
   // UTILITIES
+  {
+    name: "Coolmath Games",
+    category: "utilities",
+    icon: "🎮",
+    description: "Play puzzles, strategy games, and fun browser games.",
+    url: "https://www.coolmathgames.com/"
+  },
   {
     name: "DogeUB",
     category: "utilities",
