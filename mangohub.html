@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MangoHub</title>
   <link rel="stylesheet" href="hub.css">
-  <script src="hub.js?v=5" defer></script>
+  <script src="hub.js" defer></script>
+  <script src="hub-features.js" defer></script>
 </head>
 <body>
 
@@ -38,7 +38,7 @@
         <input
           type="search"
           id="hub-search"
-          placeholder="Search games and movies..."
+          placeholder="Search games, movies, utilities..."
           autocomplete="off"
         >
         <kbd>SEARCH</kbd>
@@ -64,6 +64,24 @@
       <p class="web-search-hint">
         Search the internet or enter a website URL to visit it.
       </p>
+    </section>
+
+
+    <!-- GAME OF THE DAY -->
+    <section class="game-of-day" id="game-of-day">
+      <div class="game-of-day-copy">
+        <span class="section-eyebrow">DAILY FEATURE</span>
+        <h2>🎮 Game of the Day</h2>
+        <p id="game-of-day-description">A new game to discover every day.</p>
+      </div>
+      <div class="game-of-day-feature">
+        <div class="game-of-day-icon" id="game-of-day-icon">🎮</div>
+        <div class="game-of-day-details">
+          <h3 id="game-of-day-name">Loading today's game...</h3>
+          <span id="game-of-day-date"></span>
+        </div>
+        <button type="button" id="game-of-day-play">PLAY NOW ↗</button>
+      </div>
     </section>
 
     <!-- BUILT-IN PLAYER -->
@@ -117,6 +135,7 @@
       <button class="category-button active" data-category="all">All</button>
       <button class="category-button" data-category="games">🎮 Games</button>
       <button class="category-button" data-category="movies">🎬 Movies</button>
+      <button class="category-button" data-category="utilities">🛠️ Utilities</button>
     </nav>
 
     <!-- LIBRARY -->
@@ -145,7 +164,7 @@
       <span>🥭</span>
       <div>
         <h3>Made for discovery.</h3>
-        <p>MangoHub brings entertainment together in one place.</p>
+        <p>MangoHub brings useful entertainment and tools together in one place.</p>
       </div>
     </section>
 
@@ -287,6 +306,60 @@
           <small>#bd8c22</small>
         </button>
 
+      </div>
+
+
+      <!-- CUSTOM THEME CREATOR -->
+      <div class="custom-theme-builder" id="custom-theme-builder">
+        <div class="section-heading custom-theme-heading">
+          <div>
+            <span class="section-eyebrow">MAKE IT YOURS</span>
+            <h2>🎨 Custom Theme Creator</h2>
+          </div>
+        </div>
+        <p class="custom-theme-intro">
+          Create, save, and switch between your own MangoHub color combinations.
+        </p>
+
+        <div class="custom-theme-controls">
+          <label class="custom-theme-name-field">
+            <span>Theme name</span>
+            <input id="custom-theme-name" type="text" maxlength="24"
+                   placeholder="My custom theme" autocomplete="off">
+          </label>
+
+          <label class="custom-color-field">
+            <span>Accent color</span>
+            <span class="custom-color-input-wrap">
+              <input id="custom-accent-color" type="color" value="#ECEA98">
+              <code id="custom-accent-value">#ECEA98</code>
+            </span>
+          </label>
+
+          <label class="custom-color-field">
+            <span>Background color</span>
+            <span class="custom-color-input-wrap">
+              <input id="custom-background-color" type="color" value="#000000">
+              <code id="custom-background-value">#000000</code>
+            </span>
+          </label>
+        </div>
+
+        <div class="custom-theme-actions">
+          <button type="button" id="preview-custom-theme">Preview Theme</button>
+          <button type="button" id="save-custom-theme">＋ Save Theme</button>
+        </div>
+
+        <p class="custom-theme-status" id="custom-theme-status" aria-live="polite">
+          Your saved themes stay on this device and browser.
+        </p>
+
+        <div class="saved-custom-themes">
+          <h3>Your Saved Themes</h3>
+          <div id="custom-theme-list" class="custom-theme-list">
+            <p class="custom-theme-empty">No custom themes saved yet.</p>
+          </div>
+        </div>
       </div>
 
     </section>
