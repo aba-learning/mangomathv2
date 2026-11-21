@@ -1,3 +1,4 @@
+
 /* =========================================
    MANGOHUB - MAIN SCRIPT
 ========================================= */
@@ -364,26 +365,39 @@ function addToRecentlyPlayed(item) {
    CATEGORY BUTTONS
 ========================================= */
 
-const utilitiesButton = document.createElement("button");
-utilitiesButton.type = "button";
-utilitiesButton.className = "category-button";
-utilitiesButton.dataset.category = "utilities";
-utilitiesButton.textContent = "🧰 Utilities";
-
-categoryNav.appendChild(utilitiesButton);
-
-const favoritesButton = document.createElement("button");
-favoritesButton.type = "button";
-favoritesButton.className = "category-button";
-favoritesButton.dataset.category = "favorites";
-favoritesButton.textContent = "⭐ Favorites";
-
-categoryNav.appendChild(favoritesButton);
-
-const allButton = [...categoryButtons].find(button =>
-  button.dataset.category === "all" ||
-  button.textContent.trim().toLowerCase() === "all"
+// Reuse Utilities if it already exists in the HTML.
+let utilitiesButton = categoryNav.querySelector(
+  '[data-category="utilities"]'
 );
+
+if (!utilitiesButton) {
+  utilitiesButton = document.createElement("button");
+  utilitiesButton.type = "button";
+  utilitiesButton.className = "category-button";
+  utilitiesButton.dataset.category = "utilities";
+  utilitiesButton.textContent = "🧰 Utilities";
+  categoryNav.appendChild(utilitiesButton);
+}
+
+// Reuse Favorites if it already exists in the HTML.
+let favoritesButton = categoryNav.querySelector(
+  '[data-category="favorites"]'
+);
+
+if (!favoritesButton) {
+  favoritesButton = document.createElement("button");
+  favoritesButton.type = "button";
+  favoritesButton.className = "category-button";
+  favoritesButton.dataset.category = "favorites";
+  favoritesButton.textContent = "⭐ Favorites";
+  categoryNav.appendChild(favoritesButton);
+}
+
+const allButton = [...categoryNav.querySelectorAll(".category-button")]
+  .find(button =>
+    button.dataset.category === "all" ||
+    button.textContent.trim().toLowerCase() === "all"
+  );
 
 if (allButton) {
   allButton.dataset.category = "all";
@@ -391,9 +405,7 @@ if (allButton) {
 }
 
 const allCategoryButtons = [
-  ...categoryButtons,
-  utilitiesButton,
-  favoritesButton
+  ...categoryNav.querySelectorAll(".category-button")
 ];
 
 /* =========================================
